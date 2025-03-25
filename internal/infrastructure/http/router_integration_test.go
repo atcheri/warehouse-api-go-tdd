@@ -16,10 +16,10 @@ func TestRouter(t *testing.T) {
 		config, _ := doubles.NewTestConfig()
 		server, _ := rest.NewRouter(config.HTTP, rest.NewHelloHandler())
 		w := httptest.NewRecorder()
-		req, _ := http.NewRequest(http.MethodPost, "/product", nil)
+		req, _ := http.NewRequest(http.MethodPost, "/v1/product", nil)
 
 		// act
-		server.Call(w, req)
+		server.ServeHTTP(w, req)
 
 		// assert
 		assert.Equal(t, http.StatusCreated, w.Result().StatusCode)

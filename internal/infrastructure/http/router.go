@@ -44,7 +44,14 @@ func NewRouter(
 	{
 		hello := v1.Group("/hello")
 		{
-			hello.GET("/", helloHandler.HelloWorld)
+			hello.GET("", helloHandler.HelloWorld)
+		}
+
+		product := v1.Group("/product")
+		{
+			product.POST("", func(ctx *gin.Context) {
+				ctx.JSON(http.StatusCreated, nil)
+			})
 		}
 	}
 
@@ -56,9 +63,4 @@ func NewRouter(
 // Serve starts the HTTP server
 func (r *Router) Serve(listenAddr string) error {
 	return r.Run(listenAddr)
-}
-
-// ServeHTTP is a wrapper around gin ServeHTTP
-func (r *Router) Call(w http.ResponseWriter, req *http.Request) {
-	r.ServeHTTP(w, req)
 }
