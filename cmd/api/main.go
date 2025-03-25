@@ -7,7 +7,9 @@ import (
 
 	"github.com/atcheri/warehouse-api-go-tdd/internal/infrastructure/config"
 	"github.com/atcheri/warehouse-api-go-tdd/internal/infrastructure/http"
+	"github.com/atcheri/warehouse-api-go-tdd/internal/infrastructure/http/handlers"
 	"github.com/atcheri/warehouse-api-go-tdd/internal/infrastructure/logger"
+	usecases "github.com/atcheri/warehouse-api-go-tdd/internal/use-cases"
 )
 
 func main() {
@@ -25,7 +27,8 @@ func main() {
 	// Init router
 	router, err := http.NewRouter(
 		config.HTTP,
-		http.NewHelloHandler(),
+		handlers.NewHelloHandler(),
+		handlers.NewProductHandler(usecases.CreateProduct{}),
 	)
 
 	if err != nil {
