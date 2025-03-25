@@ -2,6 +2,7 @@ package http
 
 import (
 	"log/slog"
+	"net/http"
 	"strings"
 
 	"github.com/atcheri/warehouse-api-go-tdd/internal/infrastructure/config"
@@ -55,4 +56,9 @@ func NewRouter(
 // Serve starts the HTTP server
 func (r *Router) Serve(listenAddr string) error {
 	return r.Run(listenAddr)
+}
+
+// ServeHTTP is a wrapper around gin ServeHTTP
+func (r *Router) Call(w http.ResponseWriter, req *http.Request) {
+	r.ServeHTTP(w, req)
 }

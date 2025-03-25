@@ -3,10 +3,10 @@ module github.com/atcheri/warehouse-api-go-tdd
 go 1.24.0
 
 require (
-	github.com/bagashiz/go-pos v0.0.0-20241009030249-30833c4511e1
 	github.com/gin-gonic/gin v1.10.0
 	github.com/samber/slog-gin v1.15.0
 	github.com/samber/slog-multi v1.4.0
+	github.com/stretchr/testify v1.10.0
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
@@ -16,6 +16,7 @@ require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.19.6 // indirect
 	github.com/go-openapi/spec v0.20.4 // indirect
@@ -23,6 +24,8 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/samber/lo v1.49.1 // indirect
 	github.com/swaggo/swag v1.16.3 // indirect
 	go.opentelemetry.io/otel v1.29.0 // indirect
