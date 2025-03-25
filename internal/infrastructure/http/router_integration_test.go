@@ -14,7 +14,7 @@ func TestRouter(t *testing.T) {
 	t.Run("POST request to the product endpoint stores a new product in the warehouse", func(t *testing.T) {
 		// arrange
 		config, _ := doubles.NewTestConfig()
-		server, _ := rest.NewRouter(config.HTTP, rest.NewHelloHandler())
+		server, _ := rest.NewRouter(config.HTTP, rest.NewHelloHandler(), rest.NewProductHandler())
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest(http.MethodPost, "/v1/product", nil)
 

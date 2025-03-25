@@ -2,7 +2,6 @@ package http
 
 import (
 	"log/slog"
-	"net/http"
 	"strings"
 
 	"github.com/atcheri/warehouse-api-go-tdd/internal/infrastructure/config"
@@ -22,6 +21,7 @@ type Router struct {
 func NewRouter(
 	config *config.HTTP,
 	helloHandler *HelloHandler,
+	productHandler *ProductHandler,
 ) (*Router, error) {
 	// Disable debug mode in production
 	if config.Env == "production" {
@@ -49,9 +49,7 @@ func NewRouter(
 
 		product := v1.Group("/product")
 		{
-			product.POST("", func(ctx *gin.Context) {
-				ctx.JSON(http.StatusCreated, nil)
-			})
+			product.POST("", productHandler.CreateProduct)
 		}
 	}
 
