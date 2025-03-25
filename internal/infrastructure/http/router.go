@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/atcheri/warehouse-api-go-tdd/internal/infrastructure/config"
+	"github.com/atcheri/warehouse-api-go-tdd/internal/infrastructure/http/handlers"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	sloggin "github.com/samber/slog-gin"
@@ -20,8 +21,8 @@ type Router struct {
 // NewRouter creates a new HTTP router
 func NewRouter(
 	config *config.HTTP,
-	helloHandler *HelloHandler,
-	productHandler *ProductHandler,
+	helloHandler *handlers.HelloHandler,
+	productHandler *handlers.ProductHandler,
 ) (*Router, error) {
 	// Disable debug mode in production
 	if config.Env == "production" {
