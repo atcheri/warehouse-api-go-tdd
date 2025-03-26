@@ -28,6 +28,7 @@ func (h *ProductHandler) CreateProduct(ctx *gin.Context) {
 		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
+
 	product, _ := h.create.Execute(createProductRequest.Name, createProductRequest.Price)
 	ctx.Header("id", product.ID.String())
 	ctx.JSON(http.StatusCreated, nil)
