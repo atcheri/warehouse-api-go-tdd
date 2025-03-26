@@ -13,10 +13,10 @@ type CreateProductRequest struct {
 }
 
 type ProductHandler struct {
-	create usecases.CreateProduct
+	create usecases.CreateProductUsecase
 }
 
-func NewProductHandler(create usecases.CreateProduct) *ProductHandler {
+func NewProductHandler(create usecases.CreateProductUsecase) *ProductHandler {
 	return &ProductHandler{create}
 }
 
@@ -29,7 +29,13 @@ func (h *ProductHandler) CreateProduct(ctx *gin.Context) {
 		return
 	}
 
-	product, _ := h.create.Execute(createProductRequest.Name, createProductRequest.Price)
+	product, err := h.create.Execute(createProductRequest.Name, createProductRequest.Price)
+	if err != nil {
+		ctx.Error(err)
+		ctx.AbortWithStatus(http.StatusConflict)
+		return
+	}
+
 	ctx.Header("id", product.ID.String())
 	ctx.JSON(http.StatusCreated, nil)
 }

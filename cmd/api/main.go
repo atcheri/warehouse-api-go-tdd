@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/atcheri/warehouse-api-go-tdd/internal/infrastructure/config"
+	"github.com/atcheri/warehouse-api-go-tdd/internal/infrastructure/db"
 	"github.com/atcheri/warehouse-api-go-tdd/internal/infrastructure/http"
 	"github.com/atcheri/warehouse-api-go-tdd/internal/infrastructure/http/handlers"
 	"github.com/atcheri/warehouse-api-go-tdd/internal/infrastructure/logger"
@@ -24,11 +25,14 @@ func main() {
 
 	slog.Info("Starting the application", "app", config.App.Name, "env", config.App.Env)
 
+	// Init store
+	inMemoryProductStore := db.NewInMemoryDB()
+
 	// Init router
 	router, err := http.NewRouter(
 		config.HTTP,
 		handlers.NewHelloHandler(),
-		handlers.NewProductHandler(usecases.CreateProduct{}),
+		handlers.NewProductHandler(usecases.NewCreateProductUsecase(inMemoryProductStore)),
 	)
 
 	if err != nil {

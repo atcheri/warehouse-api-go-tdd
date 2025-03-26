@@ -1,22 +1,41 @@
 package usecases
 
 import (
+	"fmt"
+
 	"github.com/atcheri/warehouse-api-go-tdd/internal/domain"
 	"github.com/google/uuid"
 )
 
-type ProductCreator interface {
+type ProductStorer interface {
+	Add(domain.Product) error
 }
 
-type CreateProduct struct {
-	// store ProductCreator
+type CreateProductUsecase interface {
+	Execute(string, float64) (domain.Product, error)
 }
 
-func (uc CreateProduct) Execute(name string, prince float64) (domain.Product, error) {
+type createProduct struct {
+	store ProductStorer
+}
 
-	return domain.Product{
+func NewCreateProductUsecase(store ProductStorer) *createProduct {
+	return &createProduct{
+		store: store,
+	}
+}
+
+func (uc createProduct) Execute(name string, prince float64) (domain.Product, error) {
+	product := domain.Product{
 		ID:    uuid.New(),
 		Name:  name,
 		Price: prince,
-	}, nil
+	}
+
+	err := uc.store.Add(product)
+	if err != nil {
+		return domain.Product{}, fmt.Errorf("error executing the create product usecase: %w", err)
+	}
+
+	return product, nil
 }
