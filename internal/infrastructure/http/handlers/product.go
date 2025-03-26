@@ -26,7 +26,7 @@ func (h *ProductHandler) CreateProduct(ctx *gin.Context) {
 	// if err != nil {
 
 	// }
-	product := h.create.Execute(createProductRequest.Name, createProductRequest.Price)
+	product, _ := h.create.Execute(createProductRequest.Name, createProductRequest.Price)
 	ctx.Header("id", product.ID.String())
 	ctx.JSON(http.StatusCreated, nil)
 }

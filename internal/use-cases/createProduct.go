@@ -12,10 +12,11 @@ type CreateProduct struct {
 	// store ProductCreator
 }
 
-func (uc CreateProduct) Execute(name string, prince float64) domain.Product {
+func (uc CreateProduct) Execute(name string, prince float64) (domain.Product, error) {
+
 	return domain.Product{
 		ID:    uuid.New(),
 		Name:  name,
 		Price: prince,
-	}
+	}, nil
 }

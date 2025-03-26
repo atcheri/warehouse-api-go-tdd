@@ -1,6 +1,7 @@
 package http_test
 
 import (
+	"bytes"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -20,7 +21,11 @@ func TestRouter(t *testing.T) {
 		productHandler := handlers.NewProductHandler(usecases.CreateProduct{})
 		server, _ := rest.NewRouter(config.HTTP, handlers.NewHelloHandler(), productHandler)
 		w := httptest.NewRecorder()
-		req, _ := http.NewRequest(http.MethodPost, "/v1/product", nil)
+		req, _ := http.NewRequest(http.MethodPost, "/v1/product", bytes.NewBuffer([]byte(`{
+			"name": "product name",
+			"price": 13.45
+		}`),
+		))
 
 		// act
 		server.ServeHTTP(w, req)
