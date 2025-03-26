@@ -36,4 +36,24 @@ func TestRouter(t *testing.T) {
 		assert.Equal(t, http.StatusCreated, result.StatusCode)
 		assert.NotEmpty(t, id)
 	})
+
+	t.Run("fails when the product payload doesn't have a name", func(t *testing.T) {
+		// arrange
+		config, _ := doubles.NewTestConfig()
+
+		productHandler := handlers.NewProductHandler(usecases.CreateProduct{})
+		server, _ := rest.NewRouter(config.HTTP, handlers.NewHelloHandler(), productHandler)
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest(http.MethodPost, "/v1/product", bytes.NewBuffer([]byte(`{
+			"price": 13.45
+		}`),
+		))
+
+		// act
+		server.ServeHTTP(w, req)
+		result := w.Result()
+
+		// assert
+		assert.Equal(t, http.StatusBadRequest, result.StatusCode)
+	})
 }
