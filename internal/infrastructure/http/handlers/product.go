@@ -22,10 +22,12 @@ func NewProductHandler(create usecases.CreateProduct) *ProductHandler {
 
 func (h *ProductHandler) CreateProduct(ctx *gin.Context) {
 	var createProductRequest CreateProductRequest
-	_ = ctx.ShouldBind(&createProductRequest)
-	// if err != nil {
-
-	// }
+	err := ctx.ShouldBindJSON(&createProductRequest)
+	if err != nil {
+		ctx.Error(err)
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
 	product, _ := h.create.Execute(createProductRequest.Name, createProductRequest.Price)
 	ctx.Header("id", product.ID.String())
 	ctx.JSON(http.StatusCreated, nil)

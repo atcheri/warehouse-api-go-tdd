@@ -21,10 +21,10 @@ func TestRouter(t *testing.T) {
 		productHandler := handlers.NewProductHandler(usecases.CreateProduct{})
 		server, _ := rest.NewRouter(config.HTTP, handlers.NewHelloHandler(), productHandler)
 		w := httptest.NewRecorder()
-		req, _ := http.NewRequest(http.MethodPost, "/v1/product", bytes.NewBuffer([]byte(`{
+		req, _ := http.NewRequest(http.MethodPost, "/v1/product", bytes.NewBufferString(`{
 			"name": "product name",
 			"price": 13.45
-		}`),
+		}`,
 		))
 
 		// act
