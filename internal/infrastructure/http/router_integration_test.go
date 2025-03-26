@@ -74,4 +74,25 @@ func TestRouter(t *testing.T) {
 		// assert
 		assert.Equal(t, http.StatusBadRequest, result.StatusCode)
 	})
+
+	t.Run("fails when trying to create a product with the same name", func(t *testing.T) {
+		// arrange
+		config, _ := doubles.NewTestConfig()
+		productHandler := handlers.NewProductHandler(usecases.CreateProduct{})
+		server, _ := rest.NewRouter(config.HTTP, handlers.NewHelloHandler(), productHandler)
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest(http.MethodPost, "/v1/product", bytes.NewBuffer([]byte(`{
+			"name": "duplicate",
+			"price": 13.45
+		}`),
+		))
+
+		// act
+		server.ServeHTTP(httptest.NewRecorder(), req)
+		server.ServeHTTP(w, req)
+		result := w.Result()
+
+		// assert
+		assert.Equal(t, http.StatusConflict, result.StatusCode)
+	})
 }
