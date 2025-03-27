@@ -5,6 +5,7 @@ import (
 
 	usecases "github.com/atcheri/warehouse-api-go-tdd/internal/use-cases"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type CreateProductRequest struct {
@@ -19,11 +20,12 @@ type RetrieveProductResponse struct {
 }
 
 type ProductHandler struct {
-	create usecases.CreateProductUsecase
+	create   usecases.CreateProductUsecase
+	retrieve usecases.RetrieveProductUsecase
 }
 
-func NewProductHandler(create usecases.CreateProductUsecase) *ProductHandler {
-	return &ProductHandler{create}
+func NewProductHandler(create usecases.CreateProductUsecase, retrieve usecases.RetrieveProductUsecase) *ProductHandler {
+	return &ProductHandler{create, retrieve}
 }
 
 func (h *ProductHandler) CreateProduct(ctx *gin.Context) {
@@ -48,5 +50,20 @@ func (h *ProductHandler) CreateProduct(ctx *gin.Context) {
 
 func (h *ProductHandler) RetrieveProduct(ctx *gin.Context) {
 	id := ctx.Param("id")
-	ctx.JSON(http.StatusOK, RetrieveProductResponse{ID: id, Name: "dummy product", Price: 15.50})
+	d, err := uuid.Parse(id)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	product, err := h.retrieve.Execute(d)
+	if err != nil {
+		ctx.Error(err)
+		ctx.AbortWithStatus(http.StatusNoContent)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, RetrieveProductResponse{ID: product.ID.String(), Name: product.Name, Price: product.Price})
 }

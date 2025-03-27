@@ -2,8 +2,10 @@ package db
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/atcheri/warehouse-api-go-tdd/internal/domain"
+	"github.com/google/uuid"
 )
 
 type inMemoryDB struct {
@@ -25,4 +27,14 @@ func (i *inMemoryDB) Add(p domain.Product) error {
 	i.products[p.Name] = p
 
 	return nil
+}
+
+func (i *inMemoryDB) FindById(id uuid.UUID) (domain.Product, error) {
+	for _, p := range i.products {
+		if p.ID == id {
+			return p, nil
+		}
+	}
+
+	return domain.NewProduct("not-found", 0), fmt.Errorf("product not found with id: %s", id.String())
 }

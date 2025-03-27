@@ -9,6 +9,7 @@ import (
 
 type ProductStorer interface {
 	Add(domain.Product) error
+	FindById(uuid.UUID) (domain.Product, error)
 }
 
 type CreateProductUsecase interface {

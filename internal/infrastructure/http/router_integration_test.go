@@ -21,7 +21,8 @@ func TestRouter(t *testing.T) {
 	t.Run("POST request to the product endpoint stores a new product in the warehouse", func(t *testing.T) {
 		// arrange
 		config, _ := doubles.NewTestConfig()
-		productHandler := handlers.NewProductHandler(usecases.NewCreateProductUsecase(db.NewInMemoryDB()))
+		store := db.NewInMemoryDB()
+		productHandler := handlers.NewProductHandler(usecases.NewCreateProductUsecase(store), usecases.NewRetrieveProductUsecase(store))
 		server, _ := rest.NewRouter(config.HTTP, handlers.NewHelloHandler(), productHandler)
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest(http.MethodPost, "/v1/product", bytes.NewBufferString(`{
@@ -43,7 +44,8 @@ func TestRouter(t *testing.T) {
 	t.Run("fails when the product payload doesn't have a name", func(t *testing.T) {
 		// arrange
 		config, _ := doubles.NewTestConfig()
-		productHandler := handlers.NewProductHandler(usecases.NewCreateProductUsecase(db.NewInMemoryDB()))
+		store := db.NewInMemoryDB()
+		productHandler := handlers.NewProductHandler(usecases.NewCreateProductUsecase(store), usecases.NewRetrieveProductUsecase(store))
 		server, _ := rest.NewRouter(config.HTTP, handlers.NewHelloHandler(), productHandler)
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest(http.MethodPost, "/v1/product", bytes.NewBuffer([]byte(`{
@@ -62,7 +64,8 @@ func TestRouter(t *testing.T) {
 	t.Run("fails when the product payload has an empty string", func(t *testing.T) {
 		// arrange
 		config, _ := doubles.NewTestConfig()
-		productHandler := handlers.NewProductHandler(usecases.NewCreateProductUsecase(db.NewInMemoryDB()))
+		store := db.NewInMemoryDB()
+		productHandler := handlers.NewProductHandler(usecases.NewCreateProductUsecase(store), usecases.NewRetrieveProductUsecase(store))
 		server, _ := rest.NewRouter(config.HTTP, handlers.NewHelloHandler(), productHandler)
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest(http.MethodPost, "/v1/product", bytes.NewBuffer([]byte(`{
@@ -82,7 +85,8 @@ func TestRouter(t *testing.T) {
 	t.Run("fails when trying to create a product with the same name", func(t *testing.T) {
 		// arrange
 		config, _ := doubles.NewTestConfig()
-		productHandler := handlers.NewProductHandler(usecases.NewCreateProductUsecase(db.NewInMemoryDB()))
+		store := db.NewInMemoryDB()
+		productHandler := handlers.NewProductHandler(usecases.NewCreateProductUsecase(store), usecases.NewRetrieveProductUsecase(store))
 		server, _ := rest.NewRouter(config.HTTP, handlers.NewHelloHandler(), productHandler)
 		w := httptest.NewRecorder()
 		req1, _ := http.NewRequest(http.MethodPost, "/v1/product", bytes.NewBuffer([]byte(`{
@@ -112,7 +116,7 @@ func TestRouter(t *testing.T) {
 		// add a product into the store
 		product := domain.NewProduct("dummy product", 15.50)
 		store.Add(product)
-		productHandler := handlers.NewProductHandler(usecases.NewCreateProductUsecase(store))
+		productHandler := handlers.NewProductHandler(usecases.NewCreateProductUsecase(store), usecases.NewRetrieveProductUsecase(store))
 		server, _ := rest.NewRouter(config.HTTP, handlers.NewHelloHandler(), productHandler)
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("/v1/product/%s", product.ID), nil)
