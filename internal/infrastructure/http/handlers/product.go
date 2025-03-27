@@ -12,6 +12,12 @@ type CreateProductRequest struct {
 	Price float64 `json:"price" binding:"required,number" example:"5.69"`
 }
 
+type RetrieveProductResponse struct {
+	ID    string  `json:"id"`
+	Name  string  `json:"name" binding:"required,min=1" example:"New Product"`
+	Price float64 `json:"price" binding:"required,number" example:"5.69"`
+}
+
 type ProductHandler struct {
 	create usecases.CreateProductUsecase
 }
@@ -38,4 +44,9 @@ func (h *ProductHandler) CreateProduct(ctx *gin.Context) {
 
 	ctx.Header("id", product.ID.String())
 	ctx.JSON(http.StatusCreated, nil)
+}
+
+func (h *ProductHandler) RetrieveProduct(ctx *gin.Context) {
+	id := ctx.Param("id")
+	ctx.JSON(http.StatusOK, RetrieveProductResponse{ID: id, Name: "dummy product", Price: 15.50})
 }

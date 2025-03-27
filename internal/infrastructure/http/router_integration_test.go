@@ -123,10 +123,10 @@ func TestRouter(t *testing.T) {
 		server.ServeHTTP(w, req)
 
 		// assert
-		var got domain.Product
+		var got handlers.RetrieveProductResponse
 		assert.Equal(t, http.StatusOK, w.Result().StatusCode)
 		err := json.NewDecoder(w.Result().Body).Decode(&got)
 		assert.NoError(t, err)
-		assert.Equal(t, got, got)
+		assert.Equal(t, handlers.RetrieveProductResponse{ID: id.String(), Name: "dummy product", Price: 15.50}, got)
 	})
 }
