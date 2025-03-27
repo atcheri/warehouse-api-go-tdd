@@ -14,7 +14,6 @@ import (
 	rest "github.com/atcheri/warehouse-api-go-tdd/internal/infrastructure/http"
 	"github.com/atcheri/warehouse-api-go-tdd/internal/infrastructure/http/handlers"
 	usecases "github.com/atcheri/warehouse-api-go-tdd/internal/use-cases"
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -106,18 +105,17 @@ func TestRouter(t *testing.T) {
 		assert.Equal(t, http.StatusConflict, result.StatusCode)
 	})
 
-	t.Run("retrieves an existing product given it's name", func(t *testing.T) {
+	t.Run("retrieves an existing product given its id", func(t *testing.T) {
 		// arrange
 		config, _ := doubles.NewTestConfig()
 		store := db.NewInMemoryDB()
 		// add a product into the store
-		id, _ := uuid.NewUUID()
-		product := domain.Product{ID: id, Name: "dummy product", Price: 15.50}
+		product := domain.NewProduct("dummy product", 15.50)
 		store.Add(product)
 		productHandler := handlers.NewProductHandler(usecases.NewCreateProductUsecase(store))
 		server, _ := rest.NewRouter(config.HTTP, handlers.NewHelloHandler(), productHandler)
 		w := httptest.NewRecorder()
-		req, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("/v1/product/%s", id), nil)
+		req, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("/v1/product/%s", product.ID), nil)
 
 		// act
 		server.ServeHTTP(w, req)
@@ -127,6 +125,6 @@ func TestRouter(t *testing.T) {
 		assert.Equal(t, http.StatusOK, w.Result().StatusCode)
 		err := json.NewDecoder(w.Result().Body).Decode(&got)
 		assert.NoError(t, err)
-		assert.Equal(t, handlers.RetrieveProductResponse{ID: id.String(), Name: "dummy product", Price: 15.50}, got)
+		assert.Equal(t, handlers.RetrieveProductResponse{ID: product.ID.String(), Name: product.Name, Price: product.Price}, got)
 	})
 }
