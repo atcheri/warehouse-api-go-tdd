@@ -32,7 +32,9 @@ func main() {
 	router, err := http.NewRouter(
 		config.HTTP,
 		handlers.NewHelloHandler(),
-		handlers.NewProductHandler(usecases.NewCreateProductUsecase(inMemoryProductStore)),
+		handlers.NewProductHandler(
+			usecases.NewCreateProductUsecase(inMemoryProductStore),
+			usecases.NewRetrieveProductUsecase(inMemoryProductStore)),
 	)
 
 	if err != nil {

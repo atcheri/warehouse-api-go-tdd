@@ -3,6 +3,7 @@ package db
 import (
 	"errors"
 	"fmt"
+	"sync"
 
 	"github.com/atcheri/warehouse-api-go-tdd/internal/domain"
 	"github.com/google/uuid"
@@ -10,6 +11,7 @@ import (
 
 type inMemoryDB struct {
 	products map[string]domain.Product
+	mutex    sync.Mutex
 }
 
 func NewInMemoryDB() *inMemoryDB {
@@ -20,6 +22,9 @@ func NewInMemoryDB() *inMemoryDB {
 
 // Add adds a product into the product store.
 func (i *inMemoryDB) Add(p domain.Product) error {
+	i.mutex.Lock()
+	defer i.mutex.Unlock()
+
 	if _, ok := i.products[p.Name]; ok {
 		return errors.New("product already exists")
 	}
